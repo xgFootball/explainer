@@ -1,6 +1,6 @@
-from simulation_runner import SimulationRunner
-from random_edge_bet_simulator import RandomEdgeBetSimulator
-from fixed_percentage_bankroll_strategy import FixedPercentageBankrollStrategy 
+from simulation.simulation_runner import SimulationRunner
+from simulation.random_edge_bet_simulator import RandomEdgeBetSimulator
+from simulation.fixed_percentage_bankroll_strategy import FixedPercentageBankrollStrategy 
 
 if __name__ == "__main__":
 

@@ -45,6 +45,31 @@ def compute_model(df, dep, ind):
     )
     return poisson_model.fit()
 
+def get_matches_with_predicted_goals(df):
+    self_merge = df.merge(df, on="matchid")
+
+    dup_checker = []
+    rows = []
+    for i, k in self_merge.iterrows():
+        if k['team_x'] != k['team_y'] and k['matchid'] not in dup_checker:
+            dup_checker.append(k['matchid'])
+            rows.append(dict(k))
+    return pd.DataFrame(rows)
+
+def get_matches_with_1x2_probabiliies(df):
+    probability_buff = []
+    for i, k in df.iterrows():
+        t1Win, draw, t2Win = get_probabilities(
+            float(k['predicted_goals_x']), 
+            float(k['predicted_goals_y'])
+        )
+        temp = dict(k)
+        temp['t1_win'] = t1Win
+        temp['draw'] = draw
+        temp['t2_win'] = t2Win
+        probability_buff.append(temp)
+    return pd.DataFrame(probability_buff)
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
@@ -80,28 +105,8 @@ if __name__ == "__main__":
             ['totalpasses']
         )
         df['predicted_goals'] = poisson_model.predict()
-        self_merge = df.merge(df, on="matchid")
 
-        dup_checker = []
-        rows = []
-        for i, k in self_merge.iterrows():
-            if k['team_x'] != k['team_y'] and k['matchid'] not in dup_checker:
-                dup_checker.append(k['matchid'])
-                rows.append(dict(k))
-
-        matches_with_predicted_goals = pd.DataFrame(rows)
-        probability_buff = []
-        for i, k in matches_with_predicted_goals.iterrows():
-            t1Win, draw, t2Win = get_probabilities(
-                float(k['predicted_goals_x']), 
-                float(k['predicted_goals_y'])
-            )
-            temp = dict(k)
-            temp['t1_win'] = t1Win
-            temp['draw'] = draw
-            temp['t2_win'] = t2Win
-            probability_buff.append(temp)
-
-        final = pd.DataFrame(probability_buff)
-        final.to_json(args.output_location)
+        matches_with_predicted_goals = get_matches_with_predicted_goals(df)
+        matches_with_probabilities = get_matches_with_1x2_probabiliies(matches_with_predicted_goals)
+        matches_with_probabilities.to_json(args.output_location)
         

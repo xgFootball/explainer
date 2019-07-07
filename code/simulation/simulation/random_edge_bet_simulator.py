@@ -1,6 +1,6 @@
 from numpy import random
 
-from bet import Bet
+from .bet import Bet
 
 class RandomEdgeBetSimulator:
 

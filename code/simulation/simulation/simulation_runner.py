@@ -1,4 +1,4 @@
-from simulation_results import SimulationResults
+from .simulation_results import SimulationResults
 
 class SimulationRunner:
 
