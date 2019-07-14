@@ -1,3 +1,3 @@
 # explainer #
 
-https://github.com/xgFootball/explainer
+https://gitlab.com/xgfootball/xgexplainer
